@@ -56,7 +56,7 @@ RUN curl -sL http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.23.0.t
     ./configure --enable-local && \
     make -j$(nproc)
 
-RUN TAG=45a88f046d533df256c1af7b8bcd8b0705f745c5 && \
+RUN TAG=fcf323336eab38aa8d0fffe75c11062d3e049caa && \
     curl -sL https://github.com/crosstool-ng/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
