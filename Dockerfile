@@ -31,6 +31,7 @@ RUN apt-get install -y -q \
     linux-libc-dev \
     make \
     patch \
+    rsync \
     s3cmd \
     sed \
     subversion \
