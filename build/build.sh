@@ -35,13 +35,13 @@ for version in latest 1.24.0 1.23.0 1.22.0; do
     fi
 done
 
-cp ${CONFIG_FILE} .config
+cp "${CONFIG_FILE}" .config
 ${CT} oldconfig
-${CT} build.$(nproc)
+${CT} "build.$(nproc)"
 
 export XZ_DEFAULTS="-T 0"
-tar Jcf ${OUTPUT} -C ${STAGING_DIR}/.. gcc-${VERSION}
+tar Jcf "${OUTPUT}" -C "${STAGING_DIR}"/.. "gcc-${VERSION}"
 
-if [[ ! -z "${S3OUTPUT}" ]]; then
-    s3cmd put --rr ${OUTPUT} ${S3OUTPUT}
+if [[ -n "${S3OUTPUT}" ]]; then
+    s3cmd put --rr "${OUTPUT}" "${S3OUTPUT}"
 fi
