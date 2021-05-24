@@ -6,6 +6,12 @@ ROOT=$(pwd)
 
 ARCHITECTURE=$1
 VERSION=$2
+BASEVERSION=$2
+
+if echo "${VERSION}" | grep 'trunk'; then
+    VERSION=${VERSION}-$(date +%Y%m%d)
+fi
+
 OUTPUT=/home/gcc-user/${ARCHITECTURE}-gcc-${VERSION}.tar.xz
 STAGING_DIR=/opt/compiler-explorer/${ARCHITECTURE}/gcc-${VERSION}
 export CT_PREFIX=${STAGING_DIR}
@@ -18,7 +24,7 @@ else
     OUTPUT=${3-/home/gcc-user/${ARCHITECTURE}-gcc-${VERSION}.tar.xz}
 fi
 
-CONFIG_FILE=${ARCHITECTURE}-${VERSION}.config
+CONFIG_FILE=${ARCHITECTURE}-${BASEVERSION}.config
 for version in latest 1.24.0 1.23.0 1.22.0; do
     if [[ -f ${version}/${CONFIG_FILE} ]]; then
         CONFIG_FILE=${version}/${CONFIG_FILE}
