@@ -7,9 +7,8 @@ RUN mkdir -p /opt mkdir -p /home/gcc-user && useradd gcc-user && chown gcc-user 
 
 RUN apt-get clean -y && apt-get check -y
 
-RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q
-
-RUN apt-get install -y -q \
+RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
+    apt-get install -y -q \
     autoconf \
     automake \
     libtool \
@@ -40,7 +39,12 @@ RUN apt-get install -y -q \
     unzip \
     autopoint \
     gettext \
-    xz-utils
+    xz-utils && \
+    cd /tmp && \
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf aws*
 
 WORKDIR /opt
 COPY build/patches/cross-tool-ng/cross-tool-ng-1.22.0.patch ./
