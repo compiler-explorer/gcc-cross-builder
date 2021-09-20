@@ -40,6 +40,7 @@ RUN apt-get install -y -q \
     unzip \
     autopoint \
     gettext \
+    vim \
     xz-utils
 
 WORKDIR /opt
@@ -57,7 +58,7 @@ RUN curl -sL http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.23.0.t
     ./configure --enable-local && \
     make -j$(nproc)
 
-RUN TAG=f284f4149518de6e8c403a9392be8e817bfab2e8 && \
+RUN TAG=7daa182506baf30adb35752369cf352ac2383c3b && \
     curl -sL https://github.com/crosstool-ng/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
