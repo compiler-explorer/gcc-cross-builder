@@ -60,5 +60,5 @@ popd
 tar Jcf ${OUTPUT} -C ${STAGING_DIR}/.. gcc-4.5.3
 
 if [[ ! -z "${S3OUTPUT}" ]]; then
-    s3cmd put --rr ${OUTPUT} ${S3OUTPUT}
+    aws s3 cp --storage-class REDUCED_REDUNDANCY "${OUTPUT}" "${S3OUTPUT}"
 fi
