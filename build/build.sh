@@ -43,6 +43,10 @@ done
 
 cp "${CONFIG_FILE}" .config
 ${CT} oldconfig
+# oldconfig will restore mirror urls, so as a workaround until
+# https://github.com/crosstool-ng/crosstool-ng/issues/1609 gets
+# fixed we have to update the mirror url after calling oldconfig
+sed -i -r 's|CT_ISL_MIRRORS=".*"|CT_ISL_MIRRORS="https://libisl.sourceforge.io/"|g' .config
 ${CT} "build.$(nproc)"
 
 export XZ_DEFAULTS="-T 0"
