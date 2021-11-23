@@ -3,7 +3,8 @@ MAINTAINER Matt Godbolt <matt@godbolt.org>
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN mkdir -p /opt mkdir -p /home/gcc-user && useradd gcc-user && chown gcc-user /opt /home/gcc-user
+# Annoyingly crosstool whinges if it's run as root.
+RUN mkdir -p /opt && mkdir -p /home/gcc-user && useradd gcc-user && chown gcc-user /opt /home/gcc-user
 
 RUN apt-get clean -y && apt-get check -y
 
