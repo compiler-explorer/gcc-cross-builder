@@ -6,8 +6,8 @@ ROOT=$(pwd)
 
 ARCHITECTURE=$1
 VERSION=$2
-BASEVERSION=$2
 
+BASEVERSION=${VERSION}
 if echo "${VERSION}" | grep 'trunk'; then
     VERSION=${VERSION}-$(date +%Y%m%d)
 fi
@@ -17,11 +17,16 @@ STAGING_DIR=/opt/compiler-explorer/${ARCHITECTURE}/gcc-${VERSION}
 export CT_PREFIX=${STAGING_DIR}
 
 ARG3=${3:-}
+FULLNAME=${ARCHITECTURE}-gcc-${VERSION}
 if [[ $ARG3 =~ s3:// ]]; then
     S3OUTPUT=$ARG3
 else
     S3OUTPUT=""
-    OUTPUT=${3-/home/gcc-user/${ARCHITECTURE}-gcc-${VERSION}.tar.xz}
+    if [[ -d "${ARG3}" ]]; then
+        OUTPUT="${ARG3}/${FULLNAME}.tar.xz"
+    else
+        OUTPUT=${3-/home/gcc-user/${FULLNAME}.tar.xz}
+    fi
 fi
 
 CONFIG_FILE=${ARCHITECTURE}-${BASEVERSION}.config
@@ -41,6 +46,18 @@ for version in latest 1.24.0 1.23.0 1.22.0; do
     fi
 done
 
+REVISION="$(date +%s)"  # make up a revision every time
+LAST_REVISION="${4}"
+
+echo "ce-build-revision:${REVISION}"
+echo "ce-build-output:${OUTPUT}"
+
+if [[ "${REVISION}" == "${LAST_REVISION}" ]]; then
+    echo "ce-build-status:SKIPPED"
+    exit
+fi
+
+
 cp "${CONFIG_FILE}" .config
 ${CT} oldconfig
 # oldconfig will restore mirror urls, so as a workaround until
@@ -55,3 +72,5 @@ tar Jcf "${OUTPUT}" -C "${STAGING_DIR}"/.. "gcc-${VERSION}"
 if [[ -n "${S3OUTPUT}" ]]; then
     aws s3 cp --storage-class REDUCED_REDUNDANCY "${OUTPUT}" "${S3OUTPUT}"
 fi
+
+echo "ce-build-status:OK"
