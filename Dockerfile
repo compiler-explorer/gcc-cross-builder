@@ -46,7 +46,13 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install && \
-    rm -rf aws*
+    rm -rf aws* && \
+    cd /opt && \
+    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-11.2.0.tar.xz" -o gcc11.tar.xz && \
+    tar Jxvf gcc11.tar.xz && \
+    rm gcc11.tar.xz
+
+ENV PATH="/opt/gcc-11.2.0/bin:${PATH}"
 
 WORKDIR /opt
 COPY build/patches/cross-tool-ng/cross-tool-ng-1.22.0.patch ./
@@ -63,7 +69,7 @@ RUN curl -sL http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.23.0.t
     ./configure --enable-local && \
     make -j$(nproc)
 
-RUN TAG=7daa182506baf30adb35752369cf352ac2383c3b && \
+RUN TAG=5a4c95d658eddaf7e7cd3b4c2951875a8e427e2e && \
     curl -sL https://github.com/crosstool-ng/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
