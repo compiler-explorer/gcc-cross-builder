@@ -10,6 +10,9 @@ VERSION=$2
 BASEVERSION=${VERSION}
 if echo "${VERSION}" | grep 'trunk'; then
     VERSION=${VERSION}-$(date +%Y%m%d)
+    LAST_REVISION="${4}"
+else
+    LAST_REVISION="ignore"
 fi
 
 OUTPUT=/home/gcc-user/${ARCHITECTURE}-gcc-${VERSION}.tar.xz
@@ -47,7 +50,6 @@ for version in latest 1.24.0 1.23.0 1.22.0; do
 done
 
 REVISION="$(date +%s)"  # make up a revision every time
-LAST_REVISION="${4}"
 
 echo "ce-build-revision:${REVISION}"
 echo "ce-build-output:${OUTPUT}"
