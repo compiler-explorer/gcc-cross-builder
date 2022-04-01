@@ -41,6 +41,7 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     autopoint \
     gettext \
     vim \
+    zlib1g-dev \
     xz-utils && \
     cd /tmp && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
