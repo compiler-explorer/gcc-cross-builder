@@ -61,7 +61,7 @@ fi
 
 
 cp "${CONFIG_FILE}" .config
-${CT} oldconfig
+${CT} olddefconfig
 # oldconfig will restore mirror urls, so as a workaround until
 # https://github.com/crosstool-ng/crosstool-ng/issues/1609 gets
 # fixed we have to update the mirror url after calling oldconfig
