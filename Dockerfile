@@ -20,8 +20,6 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     flex \
     git \
     gawk \
-    gcc \
-    g++ \
     binutils-multiarch \
     gperf \
     help2man \
@@ -42,18 +40,20 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     gettext \
     vim \
     zlib1g-dev \
+    software-properties-common \
     xz-utils && \
     cd /tmp && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install && \
-    rm -rf aws* && \
-    cd /opt && \
-    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-11.2.0.tar.xz" -o gcc11.tar.xz && \
-    tar Jxvf gcc11.tar.xz && \
-    rm gcc11.tar.xz
+    rm -rf aws*
 
-ENV PATH="/opt/gcc-11.2.0/bin:${PATH}"
+# Install GCC 11 from the Ubuntu test repository
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
+    apt-get update && \
+    apt-get install -y -q gcc-11 g++-11 gnat-11 && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /usr/bin/g++ g++ /usr/bin/g++-11 && \
+    update-alternatives --config gcc
 
 WORKDIR /opt
 COPY build/patches/cross-tool-ng/cross-tool-ng-1.22.0.patch ./
