@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER Matt Godbolt <matt@godbolt.org>
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -28,6 +28,8 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     libtool-bin \
     linux-libc-dev \
     make \
+    ninja-build \
+    device-tree-compiler \
     patch \
     rsync \
     s3cmd \
@@ -46,45 +48,40 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install && \
-    rm -rf aws*
+    rm -rf aws* && \
+    mkdir -p /opt/compiler-explorer/ && \
+    cd /opt/compiler-explorer && \
+    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-12.1.0.tar.xz" -o gcc12.tar.xz && \
+    tar Jxvf gcc12.tar.xz && \
+    rm gcc12.tar.xz
 
-# Install GCC 11 from the Ubuntu test repository
-RUN add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
-    apt-get update && \
-    apt-get install -y -q gcc-11 g++-11 gnat-11 && \
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /usr/bin/g++ g++ /usr/bin/g++-11 && \
-    update-alternatives --config gcc
+## Need for host GCC version to be >= latest cross GCC being built.
+## This is at least needed for building cross-GNAT (Ada) as the GNAT runtime has no
+## requirement on a minimal supported version (e.g. need GCC 12 to build any GNAT runtime).
+## This is only true for cross compiler. Native compiler can use host's runtime
+## and bootstrap everything.
+ENV PATH="/opt/compiler-explorer/gcc-12.1.0/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/opt/compiler-explorer/gcc-12.1.0/lib:${PATH}"
 
 WORKDIR /opt
-COPY build/patches/cross-tool-ng/cross-tool-ng-1.22.0.patch ./
-COPY build/patches/cross-tool-ng/cross-tool-ng-1.24.0.patch ./
-RUN curl -sL http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.22.0.tar.xz | tar Jxf - && \
-    mv crosstool-ng crosstool-ng-1.22.0 && \
-    cd crosstool-ng-1.22.0 && \
-    patch -p1 < ../cross-tool-ng-1.22.0.patch && \
-    ./configure --enable-local && \
-    make -j$(nproc)
 
-RUN curl -sL http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.23.0.tar.xz | tar Jxf - && \
-    cd crosstool-ng-1.23.0 && \
-    ./configure --enable-local && \
-    make -j$(nproc)
+## This patch is needed to force ct-ng to not error out because we are setting
+## LD_LIBRARY_PATH. There's no easy way to have ct-ng use a particular compiler
+## (...). If we have strange behavior, maybe we'll have to look at this.
+## Couldn't see anything suspicious (yet).
+COPY build/patches/crosstool-ng/ld_library_path.patch ./
 
+## TAG is pointing to a specific ct-ng revision (usually the current dev one
+## when updating this script or ct-ng)
 RUN TAG=db6f703f52e33a5791c5c2728fa1e3a330a08e98 && \
     curl -sL https://github.com/crosstool-ng/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
+    patch -p1 < ../ld_library_path.patch && \
     ./bootstrap && \
     ./configure --prefix=/opt/crosstool-ng-latest && \
     make -j$(nproc) && \
     make install
-
-RUN curl -sL http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.24.0.tar.xz | tar Jxf - && \
-    cd crosstool-ng-1.24.0 && \
-    patch -p1 < ../cross-tool-ng-1.24.0.patch && \
-    ./bootstrap && \
-    ./configure --enable-local && \
-    make -j$(nproc)
 
 RUN mkdir -p /opt/.build/tarballs
 COPY build /opt/

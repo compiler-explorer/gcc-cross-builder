@@ -33,8 +33,10 @@ else
 fi
 
 CONFIG_FILE=${ARCHITECTURE}-${BASEVERSION}.config
-for version in latest 1.24.0 1.23.0 1.22.0; do
-    if [[ -f ${version}/${CONFIG_FILE} ]]; then
+
+CT_NG_VERSIONS=(latest)
+for version in "${CT_NG_VERSIONS[@]}"; do
+    if [[ -f "${version}/${CONFIG_FILE}" ]]; then
         CONFIG_FILE=${version}/${CONFIG_FILE}
         CT=${ROOT}/crosstool-ng-$version/ct-ng
         if [[ ! -x ${CT} ]]; then
