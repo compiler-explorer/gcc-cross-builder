@@ -1,0 +1,12 @@
+diff '--color=auto' -Nru crosstool-ng-db6f703f52e33a5791c5c2728fa1e3a330a08e98/scripts/crosstool-NG.sh crosstool-ng-db6f703f52e33a5791c5c2728fa1e3a330a08e98.new/scripts/crosstool-NG.sh
+--- crosstool-ng-db6f703f52e33a5791c5c2728fa1e3a330a08e98/scripts/crosstool-NG.sh	2022-05-19 04:24:46.000000000 +0200
++++ crosstool-ng-db6f703f52e33a5791c5c2728fa1e3a330a08e98.new/scripts/crosstool-NG.sh	2022-06-07 21:39:18.398865316 +0200
+@@ -55,7 +55,7 @@
+ 
+ # Some sanity checks in the environment and needed tools
+ CT_DoLog INFO "Performing some trivial sanity checks"
+-CT_TestAndAbort "Don't set LD_LIBRARY_PATH. It screws up the build." -n "${LD_LIBRARY_PATH+set}"
++#CT_TestAndAbort "Don't set LD_LIBRARY_PATH. It screws up the build." -n "${LD_LIBRARY_PATH+set}"
+ CT_TestAndAbort "Don't set LIBRARY_PATH. It screws up the build." -n "${LIBRARY_PATH+set}"
+ CT_TestAndAbort "Don't set LPATH. It screws up the build." -n "${LPATH+set}"
+ CT_TestAndAbort "Don't set CPATH. It screws up the build." -n "${CPATH+set}"
