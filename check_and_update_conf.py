@@ -25,8 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import glob
-from os import listdir
-from os.path import isfile, join, abspath, exists
+from os.path import join, abspath, exists
 import io
 import re
 from collections import defaultdict
@@ -103,7 +102,7 @@ end program
     """,
 }
 
-def create_test (host, arch, lang, compilerId):
+def create_test (arch, lang, compilerId):
     print(f"lang is {lang}")
     json_content = {
         "source" : TEST_FOR_LANG[lang],
@@ -126,7 +125,7 @@ def create_test (host, arch, lang, compilerId):
         }
     }
 
-    curl_cmd = f'''if curl -s {host}/api/compiler/{compilerId}/compile --header "Accept: application/json"\\
+    curl_cmd = f'''if curl -s "$CEHOST/api/compiler/{compilerId}/compile" --header "Accept: application/json"\\
        -X POST -H"Content-Type: application/json"\\
        -d\'{json.dumps(json_content)}\' |\\
     '''
@@ -150,7 +149,7 @@ def create_test (host, arch, lang, compilerId):
     API_TESTS_OUTPUT.write(f"NAME='{arch} {lang} {compilerId} ASM+BINARY'\n")
     API_TESTS_OUTPUT.write(f'echo -n "$NAME" >> test.result\n')
 
-    curl_test_bin = f'''if curl -s {host}/api/compilers\?fields\=id,supportsBinary --header "Accept: application/json" |\\
+    curl_test_bin = f'''if curl -s "$CEHOST/api/compilers\?fields\=id,supportsBinary" --header "Accept: application/json" |\\
     jq '.[] | select(.id=="{compilerId}") | .supportsBinary'|\\
     '''
     curl_test_bin_end='''
@@ -349,15 +348,15 @@ def Do(args, lang):
     try:
         Wrapped_Do(args, lang)
         if API_TESTS_OUTPUT:
-            create_test(args.api_test_host, args.arch, lang, new_compiler_id)
+            create_test(args.arch, lang, new_compiler_id)
 
     except ManualFixupNeeded as e:
         if API_TESTS_OUTPUT:
-            create_test(args.api_test_host, args.arch, lang, new_compiler_id)
+            create_test(args.arch, lang, new_compiler_id)
         raise e
     except AlreadyDefined as e:
         if API_TESTS_OUTPUT:
-            create_test(args.api_test_host, args.arch, lang, new_compiler_id)
+            create_test(args.arch, lang, new_compiler_id)
         raise e
 
 ## Used for creating fake tests at the end.
@@ -547,6 +546,7 @@ if __name__ == '__main__':
             API_TESTS_OUTPUT.write('#!/bin/bash\n')
             API_TESTS_OUTPUT.write('set -euo pipefail\n')
             API_TESTS_OUTPUT.write("line='----------------------------------------'\n")
+            API_TESTS_OUTPUT.write(f"CEHOST='{args.api_test_host}'\n")
 
     if args.lang:
         Do(args, args.lang)
@@ -597,6 +597,6 @@ if __name__ == '__main__':
                     break
 
             ## Mismatching lang input
-            create_test(args.api_test_host, compiler['arch'], lang, first_cid)
+            create_test(compiler['arch'], lang, first_cid)
             API_TESTS_OUTPUT.write("## End of fake tests.\n")
             API_TESTS_OUTPUT.write("echo -e '#### End of fake tests\\n' >> test.result\n")
