@@ -55,6 +55,11 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     tar Jxvf gcc12.tar.xz && \
     rm gcc12.tar.xz
 
+## ct-ng depends on autoconf 2.71 since Oct 22, but Ubuntu 20.04 only provides 2.6x.
+## Installing from 22.04 seems to be working fine... until we bump to 22.04 :)
+RUN wget -O /tmp/auto.deb http://mirrors.kernel.org/ubuntu/pool/main/a/autoconf/autoconf_2.71-2_all.deb &&\
+    apt install /tmp/auto.deb
+
 ## Need for host GCC version to be >= latest cross GCC being built.
 ## This is at least needed for building cross-GNAT (Ada) as the GNAT runtime has no
 ## requirement on a minimal supported version (e.g. need GCC 12 to build any GNAT runtime).
@@ -73,7 +78,7 @@ COPY build/patches/crosstool-ng/ld_library_path.patch ./
 
 ## TAG is pointing to a specific ct-ng revision (usually the current dev one
 ## when updating this script or ct-ng)
-RUN TAG=cf9beb1e4fadda47a3251eaea2d701555dcdf957 && \
+RUN TAG=7622b490a359f6cc6b212859b99d32020a8542e7 && \
     curl -sL https://github.com/crosstool-ng/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
