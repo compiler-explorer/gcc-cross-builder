@@ -55,7 +55,7 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     tar Jxvf gcc12.tar.xz && \
     rm gcc12.tar.xz
 
-## ct-ng depends on autoconf 2.71 since Oct 22, but Ubuntu 20.04 only provides 2.6x.
+## ct-ng depends on autoconf 2.71 since Oct 22, but Ubuntu 20.04 only provides 2.69.
 ## Installing from 22.04 seems to be working fine... until we bump to 22.04 :)
 RUN wget -O /tmp/auto.deb http://mirrors.kernel.org/ubuntu/pool/main/a/autoconf/autoconf_2.71-2_all.deb &&\
     apt install /tmp/auto.deb
