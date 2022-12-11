@@ -321,6 +321,7 @@ compiler.{compiler_id}.semver={version}
 compiler.{compiler_id}.objdumper={objdump_path}
 compiler.{compiler_id}.demangler={cppfilt_path}
 """
+    ## This is only needed when the "groupname semver" is not applicable, which we should have everywhere.
     if name != None:
         ret += f"compiler.{compiler_id}.name={name}\n"
     return ret
@@ -407,7 +408,7 @@ def Wrapped_Do(args, lang: str):
             else:
                 print (msg)
 
-            config_fixup = generateConfig(args.arch, lang, args.version, '/opt/compiler-explorer', f'{args.arch} {args.version}')
+            config_fixup = generateConfig(args.arch, lang, args.version, '/opt/compiler-explorer', None)
             todo_msg = f'\nPlease add the following in {conf}:\n8<---8<--- BEGIN ---8<---8<---\n{config_fixup}\n8<---8<--- END ---8<---8<---\n'
 
             if args.config_todo:
