@@ -71,4 +71,5 @@ if [[ -n "${S3OUTPUT}" ]]; then
     aws s3 cp --storage-class REDUCED_REDUNDANCY "${OUTPUT}" "${S3OUTPUT}"
 fi
 
+echo "ce-build-output:${OUTPUT}"
 echo "ce-build-status:OK"
