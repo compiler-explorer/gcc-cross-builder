@@ -9,8 +9,8 @@ VERSION="$1"
 NETBSD_GCC_VERSION=$(curl -q https://raw.githubusercontent.com/NetBSD/src/trunk/external/gpl3/gcc/dist/gcc/BASE-VER)
 [ -z "${NETBSD_GCC_VERSION}" ] && exit 1
 
-if [[ "${VERSION}" != "10.4.0" ]]; then
-    echo "Only 10.4.0 supported"
+if [[ "${VERSION}" != "${NETBSD_GCC_VERSION}" ]]; then
+    echo "Only ${NETBSD_GCC_VERSION} supported as currently used in NetBSD"
     exit 255
 fi
 
