@@ -4,7 +4,12 @@ set -exuo pipefail
 
 ## This script uses NetBSD script to build the cross gcc, and will only use what
 ## they are using, which is fixed and not configurable. Currently, it's 10.4.0
-VERSION=10.4.0
+VERSION="$1"
+
+if [[ "${VERSION}" != "10.4.0" ]]; then
+    echo "Only 10.4.0 supported"
+    exit 255
+fi
 
 TARGET=vax-netbsd-elf
 
@@ -12,16 +17,16 @@ OUTPUT=/home/gcc-user/${TARGET}-gcc-${VERSION}.tar.xz
 STAGING_DIR=/opt/compiler-explorer/${TARGET}/gcc-${VERSION}
 export CT_PREFIX=${STAGING_DIR}
 
-ARG1=${1:-}
+ARG2=${2:-}
 FULLNAME=${TARGET}-gcc-${VERSION}
-if [[ $ARG1 =~ s3:// ]]; then
-    S3OUTPUT=$ARG1
+if [[ $ARG2 =~ s3:// ]]; then
+    S3OUTPUT=$ARG2
 else
     S3OUTPUT=""
-    if [[ -d "${ARG1}" ]]; then
-        OUTPUT="${ARG1}/${FULLNAME}.tar.xz"
+    if [[ -d "${ARG2}" ]]; then
+        OUTPUT="${ARG2}/${FULLNAME}.tar.xz"
     else
-        OUTPUT=${1-/home/gcc-user/${FULLNAME}.tar.xz}
+        OUTPUT=${2-/home/gcc-user/${FULLNAME}.tar.xz}
     fi
 fi
 
