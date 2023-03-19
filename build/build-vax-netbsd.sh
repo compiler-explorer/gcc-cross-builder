@@ -6,16 +6,17 @@ set -exuo pipefail
 ## they are using, which is fixed and not configurable. Currently, it's 10.4.0
 VERSION="$1"
 
+NETBSD_GCC_VERSION=$(curl -q https://raw.githubusercontent.com/NetBSD/src/trunk/external/gpl3/gcc/dist/gcc/BASE-VER)
+[ -z "${NETBSD_GCC_VERSION}" ] && exit 1
+
 if [[ "${VERSION}" != "10.4.0" ]]; then
     echo "Only 10.4.0 supported"
     exit 255
 fi
 
-TARGET=vax-netbsd-elf
+TARGET=vax-netbsd
 
 OUTPUT=/home/gcc-user/${TARGET}-gcc-${VERSION}.tar.xz
-STAGING_DIR=/opt/compiler-explorer/${TARGET}/gcc-${VERSION}
-export CT_PREFIX=${STAGING_DIR}
 
 ARG2=${2:-}
 FULLNAME=${TARGET}-gcc-${VERSION}
