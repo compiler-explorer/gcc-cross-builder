@@ -14,7 +14,7 @@ if [[ "${VERSION}" != "${NETBSD_GCC_VERSION}" ]]; then
     exit 255
 fi
 
-TARGET=vax-netbsd
+TARGET=vax-netbsdelf
 
 OUTPUT=/home/gcc-user/${TARGET}-gcc-${VERSION}.tar.xz
 
