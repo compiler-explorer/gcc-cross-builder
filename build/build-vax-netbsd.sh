@@ -40,7 +40,7 @@ DESTDIR="${WORKDIR}/dest"
 TOOLDIR="${WORKDIR}/tools"
 
 FINAL_ROOT="${WORKDIR}/gcc-${VERSION}"
-FINAL_SYSROOT="${FINAL_ROOT}/vax--netbdself-sysroot"
+FINAL_SYSROOT="${FINAL_ROOT}/vax--netbsdelf-sysroot"
 
 NB_ARCH=vax
 NB_MACHINE=vax
