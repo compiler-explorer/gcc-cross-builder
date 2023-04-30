@@ -51,9 +51,9 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     rm -rf aws* && \
     mkdir -p /opt/compiler-explorer/ && \
     cd /opt/compiler-explorer && \
-    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-12.1.0.tar.xz" -o gcc12.tar.xz && \
-    tar Jxvf gcc12.tar.xz && \
-    rm gcc12.tar.xz
+    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-13.1.0.tar.xz" -o gcc13.tar.xz && \
+    tar Jxvf gcc13.tar.xz && \
+    rm gcc13.tar.xz
 
 ## ct-ng depends on autoconf 2.71 since Oct 22, but Ubuntu 20.04 only provides 2.69.
 ## Installing from 22.04 seems to be working fine... until we bump to 22.04 :)
@@ -65,8 +65,8 @@ RUN wget -O /tmp/auto.deb http://mirrors.kernel.org/ubuntu/pool/main/a/autoconf/
 ## requirement on a minimal supported version (e.g. need GCC 12 to build any GNAT runtime).
 ## This is only true for cross compiler. Native compiler can use host's runtime
 ## and bootstrap everything.
-ENV PATH="/opt/compiler-explorer/gcc-12.1.0/bin:${PATH}"
-ENV LD_LIBRARY_PATH="/opt/compiler-explorer/gcc-12.1.0/lib:${PATH}"
+ENV PATH="/opt/compiler-explorer/gcc-13.1.0/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/opt/compiler-explorer/gcc-13.1.0/lib:${PATH}"
 
 WORKDIR /opt
 
