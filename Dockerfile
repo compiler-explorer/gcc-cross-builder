@@ -51,16 +51,20 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     rm -rf aws* && \
     mkdir -p /opt/compiler-explorer/ && \
     cd /opt/compiler-explorer && \
+    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-11.4.0.tar.xz" -o gcc11.tar.xz && \
+    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
     curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-13.1.0.tar.xz" -o gcc13.tar.xz && \
+    tar Jxvf gcc11.tar.xz && \
+    tar Jxvf gcc12.tar.xz && \
     tar Jxvf gcc13.tar.xz && \
-    rm gcc13.tar.xz
+    rm gcc11.tar.xz gcc12.tar.xz gcc13.tar.xz
 
 ## ct-ng depends on autoconf 2.71 since Oct 22, but Ubuntu 20.04 only provides 2.69.
 ## Installing from 22.04 seems to be working fine... until we bump to 22.04 :)
 RUN wget -O /tmp/auto.deb http://mirrors.kernel.org/ubuntu/pool/main/a/autoconf/autoconf_2.71-2_all.deb &&\
     apt install /tmp/auto.deb
 
-## Need for host GCC version to be >= latest cross GCC being built.
+## Need for host GCC version to be ~= latest cross GCC being built.
 ## This is at least needed for building cross-GNAT (Ada) as the GNAT runtime has no
 ## requirement on a minimal supported version (e.g. need GCC 12 to build any GNAT runtime).
 ## This is only true for cross compiler. Native compiler can use host's runtime

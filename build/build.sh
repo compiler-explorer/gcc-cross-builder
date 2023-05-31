@@ -61,6 +61,26 @@ if [[ "${REVISION}" == "${LAST_REVISION}" ]]; then
     exit
 fi
 
+# Pick the host base compiler.
+# We need to pick one as close as possible to the GCC version being built because of GNAT (Ada).
+# It needs a matching compiler to build the runtime. Too old or too recent may cause build errors.
+
+# Kind of heuristic to find a "good" GCC version. Not perfect, but should do the work
+V=${BASEVERSION}
+for i in 1 2 3; do
+    F=0
+    for candidate in $(find  /opt/compiler-explorer/ -maxdepth 1 -name "gcc-${V}*" -type d); do
+        echo "Using ${candidate} as the host base compiler"
+        export PATH="${candidate}/bin:${PATH}"
+        export LD_LIBRARY_PATH="${candidate}/lib:${PATH}"
+        F=1
+    done
+    if [[ "$F" == 1 ]]; then
+       break
+    fi
+
+    V=${V%.*}
+done
 
 cp "${CONFIG_FILE}" .config
 ${CT} olddefconfig
@@ -68,7 +88,10 @@ ${CT} olddefconfig
 # https://github.com/crosstool-ng/crosstool-ng/issues/1609 gets
 # fixed we have to update the mirror url after calling oldconfig
 sed -i -r 's|CT_ISL_MIRRORS=".*"|CT_ISL_MIRRORS="https://libisl.sourceforge.io/"|g' .config
-${CT} "build.$(nproc)"
+if ! ${CT} "build.$(nproc)"; then
+    cat build.log
+    exit 1
+fi
 
 export XZ_DEFAULTS="-T 0"
 tar Jcf "${OUTPUT}" -C "${STAGING_DIR}"/.. "gcc-${VERSION}"
