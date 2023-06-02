@@ -21,9 +21,9 @@ CID=$(docker create -ti --name dummy gcc-cross ./build.sh "$ARCH" "$VERSION" /op
 if docker start -a "$CID";
 then
    docker cp "dummy:/opt/$ARCH-gcc-${OUTPUT_VERSION_FILE}.tar.xz" "$OUTDIR"/
-   echo "$ARCH successful"
+   echo "$ARCH SUCCESS"
 else
-    echo "$ARCH not successful"
+    echo "$ARCH FAILED"
     RET=1
 fi
 docker rm -f dummy
