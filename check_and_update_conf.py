@@ -33,8 +33,7 @@ import json
 
 import argparse
 
-LANGS=[ "ADA", "D", "FORTRAN", "CXX", "GO", "C"]
-## OBJC, OBJCXX
+LANGS=[ "ADA", "D", "FORTRAN", "CXX", "GO", "C", "OBJC", "OBJCXX" ]
 
 CT_LANGS = {
     "ADA": "ADA",
@@ -42,12 +41,14 @@ CT_LANGS = {
     "FORTRAN": "FORTRAN",
     "CXX": "CXX",
     "GO": "GOLANG",
-    "C" : "C"
+    "C" : "C",
+    "OBJC" : "OBJC",
+    "OBJCXX" : "OBJCXX",
 }
 
 parser = argparse.ArgumentParser(description='Update and check config files.')
 parser.add_argument ('-a', '--arch', required=True, metavar="ARCH")
-parser.add_argument ('-l', '--lang', required=False, metavar="LANG")
+parser.add_argument ('-l', '--lang', help="Only handle LANG instead of trying them all",  required=False, metavar="LANG")
 parser.add_argument ('--inplace', default=False, action='store_true', help='write change inplace')
 parser.add_argument ('--output', required=False, metavar="OUTPUT")
 parser.add_argument ('--error-if-missing-previous', action='store_true')
@@ -100,6 +101,8 @@ program main
     i = 3
 end program
     """,
+    "OBJC": "int f(void){return 0;} int main (){return f();}",
+    "OBJCXX": "int f(void){return 0;} int main (){return f();}",
 }
 
 def create_test (arch, lang, compilerId):
@@ -149,7 +152,7 @@ def create_test (arch, lang, compilerId):
     API_TESTS_OUTPUT.write(f"NAME='{arch} {lang} {compilerId} ASM+BINARY'\n")
     API_TESTS_OUTPUT.write(f'echo -n "$NAME" >> test.result\n')
 
-    curl_test_bin = f'''if curl -s "$CEHOST/api/compilers\?fields\=id,supportsBinary" --header "Accept: application/json" |\\
+    curl_test_bin = f'''if curl -s "$CEHOST/api/compilers?fields=id,supportsBinary" --header "Accept: application/json" |\\
     jq '.[] | select(.id=="{compilerId}") | .supportsBinary'|\\
     '''
     curl_test_bin_end='''
@@ -238,24 +241,30 @@ COMPILER_ID_PATTERN.default_factory = lambda: {
     'CXX': '{arch}g{version}',
     'FORTRAN': 'f{arch}g{version}',
     'GO': 'gccgo{arch}{version}',
+    'OBJC': 'objc{arch}g{version}',
+    'OBJCXX': 'objcpp{arch}g{version}',
 }
 
 COMPILER_ID_PATTERN['riscv64'] = {
     'D': 'gdc{arch}{version}',
     'ADA': 'gnat{arch}{version}',
     'C': 'rv64-cgcc{version}',
-    'CXX': 'rv64-cgcc{version}',
+    'CXX': 'rv64-gcc{version}',
     'FORTRAN': 'f{arch}g{version}',
     'GO': 'gccgo{arch}{version}',
+    'OBJC': 'objcrv32g{version}',
+    'OBJCXX': 'objcppgccrv64{version}',
 }
 
 COMPILER_ID_PATTERN['riscv32'] = {
     'D': 'gdc{arch}{version}',
     'ADA': 'gnat{arch}{version}',
     'C': 'rv32-cgcc{version}',
-    'CXX': 'rv32-cgcc{version}',
+    'CXX': 'rv32-gcc{version}',
     'FORTRAN': 'f{arch}g{version}',
     'GO': 'gccgo{arch}{version}',
+    'OBJC': 'objcrv32g{version}',
+    'OBJCXX': 'objcppgccrv32{version}',
 }
 
 ARCH_RENAMING_IN_CONFIG={
@@ -263,6 +272,7 @@ ARCH_RENAMING_IN_CONFIG={
     "powerpc64": "ppc64",
     "powerpc64le": "ppc64le",
     "riscv32": "riscv",
+    "sparc-leon": "sparcleon",
 }
 
 FILEPREFIX = {
@@ -272,6 +282,8 @@ FILEPREFIX = {
     'CXX': 'c++',
     'FORTRAN': 'fortran',
     'GO': 'go',
+    'OBJC': 'objc',
+    'OBJCXX': 'objc++',
 }
 
 COMPILER_SUFFIX = {
@@ -281,6 +293,8 @@ COMPILER_SUFFIX = {
     'CXX': 'g++',
     'FORTRAN': 'gfortran',
     'GO': 'gccgo',
+    'OBJC': 'gcc',
+    'OBJCXX': 'g++',
 }
 
 class Woops(Exception):
