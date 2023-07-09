@@ -24,6 +24,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+from enum import Enum
 import glob
 from os.path import join, abspath, exists
 import io
@@ -306,8 +307,35 @@ class AlreadyDefined(Exception):
 class ManualFixupNeeded(Exception):
     pass
 
+class FixupAction(Enum):
+    REPLACE = 1
+    ADD_NEW_LINE_AFTER = 2
+    APPEND_TO_LINE = 3
+    ADD_SORTED = 4
+
+## takes the first number it finds in the key and use it. if no number is found,
+## put the item at the end (probably some trunk compiler)
+def find_int_key (key):
+    if key.isdigit():
+        t = key
+    m = re.search(r'(\d+)', key)
+    if m:
+        t = int(m.group(1))
+    else:
+        t = 99999
+    return t
+
+def compiler_version_sort(l):
+    return sorted(l, key=find_int_key)
+
+def add_sorted(original_line: str, new_value: str):
+    k,v = original_line.split('=')
+    values = v.split(':')
+    values.append(new_value)
+    return '='.join ([k, ':'.join(compiler_version_sort(values))])
+
 class Fixup:
-    def __init__(self, line_number, text, action):
+    def __init__(self, line_number, text, action: FixupAction):
         self.line = line_number
         self.text = text
         self.action = action
@@ -315,12 +343,14 @@ class Fixup:
     def __repr__(self):
         action=f"NONE{self.action}"
         match self.action:
-            case 1:
+            case FixupAction.REPLACE:
                 action="replacing it with"
-            case 2:
+            case FixupAction.ADD_NEW_LINE_AFTER:
                 action="adding after newline"
-            case 3:
+            case FixupAction.APPEND_TO_LINE:
                 action="appending after"
+            case FixupAction.ADD_SORTED:
+                action="Add and natural sort the values"
 
         return f'Fixup line {self.line} by {action} text: {self.text}'
 
@@ -440,8 +470,8 @@ def Wrapped_Do(args, lang: str):
 
             fixups[previous_listed_line.number].append(Fixup(
                 previous_listed_line.number,
-                f':{new_compiler_id}',
-                3))
+                f'{new_compiler_id}',
+                FixupAction.ADD_SORTED))
 
             last_line = p['last_compilers_prop'][previous_compiler_id].number
             print ("Last prop set for previous {version} at line {line}".format(
@@ -458,7 +488,7 @@ def Wrapped_Do(args, lang: str):
             fixups[last_line].append(Fixup(
                 last_line,
                 generateConfig(args.arch, lang, args.version, '/opt/compiler-explorer', name),
-                2))
+                FixupAction.ADD_NEW_LINE_AFTER))
 
     output = io.StringIO()
     with open(conf) as f:
@@ -466,13 +496,16 @@ def Wrapped_Do(args, lang: str):
             if line_number in fixups:
                 for fixup in fixups[line_number]:
                     match fixup.action:
-                        case 1:
+                        case FixupAction.REPLACE:
                             print (fixup.text, file=output, end="")
-                        case 2:
+                        case FixupAction.ADD_NEW_LINE_AFTER:
                             print (text, file=output, end="")
                             print (fixup.text, file=output, end="")
-                        case 3:
+                        case FixupAction.APPEND_TO_LINE:
                             print (text.strip() + fixup.text, file=output)
+                        case FixupAction.ADD_SORTED:
+                            new_line = add_sorted (text.strip(), fixup.text)
+                            print (new_line, file=output)
             else:
                 print (text, file=output, end="")
         # output.close()
