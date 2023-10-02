@@ -268,12 +268,24 @@ COMPILER_ID_PATTERN['riscv32'] = {
     'OBJCXX': 'objcppgccrv32{version}',
 }
 
+COMPILER_ID_PATTERN['arm-unknown'] = {
+    'D': 'gdc{arch}u{version}',
+    'ADA': 'gnat{arch}u{version}',
+    'C': 'c{arch}ug{version}',
+    'CXX': '{arch}ug{version}',
+    'FORTRAN': 'f{arch}ug{version}',
+    'GO': 'gccgo{arch}u{version}',
+    'OBJC': 'objc{arch}ug{version}',
+    'OBJCXX': 'objcpp{arch}ug{version}',
+}
+
 ARCH_RENAMING_IN_CONFIG={
     "powerpc": "ppc",
     "powerpc64": "ppc64",
     "powerpc64le": "ppc64le",
     "riscv32": "riscv",
     "sparc-leon": "sparcleon",
+    "arm-unknown": "arm",
 }
 
 FILEPREFIX = {
