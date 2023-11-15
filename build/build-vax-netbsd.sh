@@ -108,6 +108,7 @@ popd
 gcc_name="gcc-${gcc_target}-${gcc_version}-${nb_actual_timestamp}"
 gcc_tarball="${workdir}/${gcc_name}.tar.xz"
 [ -z "${forced_output_filename}" ] || gcc_tarball="${forced_output_filename}"
+[ -d "${forced_output_filename}" ] || gcc_tarball="${forced_output_filename}/${gcc_tarball}"
 gcc_destdir="${workdir}/${gcc_name}"
 gcc_destdir_sysroot="${gcc_destdir}/${gcc_target}-sysroot"
 mkdir -p "${gcc_destdir}"
