@@ -72,7 +72,7 @@ for i in 1 2 3; do
     for candidate in $(find  /opt/compiler-explorer/ -maxdepth 1 -name "gcc-${V}*" -type d); do
         echo "Using ${candidate} as the host base compiler"
         export PATH="${candidate}/bin:${PATH}"
-        export LD_LIBRARY_PATH="${candidate}/lib:${PATH}"
+        export LD_LIBRARY_PATH="${candidate}/lib:${candidate}/lib64:${LD_LIBRARY_PATH}"
         F=1
     done
     if [[ "$F" == 1 ]]; then
