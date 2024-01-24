@@ -8,6 +8,11 @@ RUN mkdir -p /opt && mkdir -p /home/gcc-user && useradd gcc-user && chown gcc-us
 
 RUN apt-get clean -y && apt-get check -y
 
+## for nightly build of cross compiler with GNAT (Ada), we need "a matching"
+## compiler. So using gcc-13 for master is not working. So we have a *hardcoded*
+## snapshot below that should be "good enough". When there's a failure caused by
+## GNAT, it's probably time to bump the snapshot.
+
 RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     apt-get install -y -q \
     autoconf \
@@ -54,10 +59,13 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-11.4.0.tar.xz" -o gcc11.tar.xz && \
     curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
     curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20240122.tar.xz" -o "gcc-snapshot.tar.xz" && \
     tar Jxvf gcc11.tar.xz && \
     tar Jxvf gcc12.tar.xz && \
     tar Jxvf gcc13.tar.xz && \
-    rm gcc11.tar.xz gcc12.tar.xz gcc13.tar.xz
+    tar Jxvf gcc-snapshot.tar.xz && \
+    mv gcc-trunk-20240122 gcc-trunk && \
+    rm gcc11.tar.xz gcc12.tar.xz gcc13.tar.xz gcc-snapshot.tar.xz
 
 ## Need for host GCC version to be ~= latest cross GCC being built.
 ## This is at least needed for building cross-GNAT (Ada) as the GNAT runtime has no

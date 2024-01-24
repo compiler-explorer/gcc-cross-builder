@@ -65,7 +65,11 @@ fi
 # We need to pick one as close as possible to the GCC version being built because of GNAT (Ada).
 # It needs a matching compiler to build the runtime. Too old or too recent may cause build errors.
 
-# Kind of heuristic to find a "good" GCC version. Not perfect, but should do the work
+# Kind of heuristic to find a "good" GCC version. Not perfect, but should do the
+# work. Starts by checking for a matching version host compiler X.Y.Z, then for
+# any X.Y and finally for any X. If nothing matches, then it uses the default
+# one (see Dockerfile).
+# This works for X.Y.Z but also for "trunk".
 V=${BASEVERSION}
 for i in 1 2 3; do
     F=0
