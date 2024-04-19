@@ -56,10 +56,11 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     rm -rf aws* && \
     mkdir -p /opt/compiler-explorer/ && \
     cd /opt/compiler-explorer && \
-    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-11.4.0.tar.xz" -o gcc11.tar.xz && \
-    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
-    curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20240122.tar.xz" -o "gcc-snapshot.tar.xz" && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20240419.tar.xz" -o "gcc-snapshot.tar.xz" && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-11.4.0.tar.xz" -o gcc11.tar.xz && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20240419.tar.xz" -o "gcc-snapshot.tar.xz" && \
     tar Jxf gcc11.tar.xz && \
     tar Jxf gcc12.tar.xz && \
     tar Jxf gcc13.tar.xz && \
