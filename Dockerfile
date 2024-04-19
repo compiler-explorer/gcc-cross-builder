@@ -51,7 +51,7 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     xz-utils && \
     cd /tmp && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
+    unzip -q awscliv2.zip && \
     ./aws/install && \
     rm -rf aws* && \
     mkdir -p /opt/compiler-explorer/ && \
@@ -60,10 +60,10 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
     curl "https://compiler-explorer.s3.amazonaws.com/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20240122.tar.xz" -o "gcc-snapshot.tar.xz" && \
-    tar Jxvf gcc11.tar.xz && \
-    tar Jxvf gcc12.tar.xz && \
-    tar Jxvf gcc13.tar.xz && \
-    tar Jxvf gcc-snapshot.tar.xz && \
+    tar Jxf gcc11.tar.xz && \
+    tar Jxf gcc12.tar.xz && \
+    tar Jxf gcc13.tar.xz && \
+    tar Jxf gcc-snapshot.tar.xz && \
     mv gcc-trunk-20240122 gcc-trunk && \
     rm gcc11.tar.xz gcc12.tar.xz gcc13.tar.xz gcc-snapshot.tar.xz
 
