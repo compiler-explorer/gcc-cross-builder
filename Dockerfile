@@ -56,7 +56,6 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     rm -rf aws* && \
     mkdir -p /opt/compiler-explorer/ && \
     cd /opt/compiler-explorer && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20240419.tar.xz" -o "gcc-snapshot.tar.xz" && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-11.4.0.tar.xz" -o gcc11.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
@@ -65,7 +64,7 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     tar Jxf gcc12.tar.xz && \
     tar Jxf gcc13.tar.xz && \
     tar Jxf gcc-snapshot.tar.xz && \
-    mv gcc-trunk-20240122 gcc-trunk && \
+    mv gcc-trunk-20240419 gcc-trunk && \
     rm gcc11.tar.xz gcc12.tar.xz gcc13.tar.xz gcc-snapshot.tar.xz
 
 ## Need for host GCC version to be ~= latest cross GCC being built.
