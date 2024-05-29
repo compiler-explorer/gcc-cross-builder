@@ -31,7 +31,7 @@ import io
 import re
 from collections import defaultdict
 import json
-
+import subprocess
 import argparse
 
 LANGS=[ "ADA", "D", "FORTRAN", "CXX", "GO", "C", "OBJC", "OBJCXX" ]
@@ -390,7 +390,18 @@ def findFile (arch: str, lang: str, version: str, directory: str, suffix: str):
     raise Woops("Can't find '{target_dir}, something's wrong")
 
 def findCompiler (arch: str, lang: str, version: str, directory: str):
-    return findFile(arch, lang, version, directory, COMPILER_SUFFIX[lang])
+    candidate = findFile(arch, lang, version, directory, COMPILER_SUFFIX[lang])
+    version_found = False
+    lines = subprocess.check_output([candidate, "--version"]).decode("utf-8").splitlines()
+    for l in lines:
+        if re.search(version, l):
+            version_found = True
+
+    if not version_found:
+        text = '\n'.join(lines)
+        raise Woops(f"Compiler found ({candidate}) doesn't expose the correct version: {text}")
+
+    return candidate
 
 def CompilerId (arch: str, version: str, lang: str):
     renamed_arch = arch
@@ -639,6 +650,9 @@ if __name__ == '__main__':
                     if args.summary:
                         with open(args.summary, "a") as f:
                             f.write(f"NOT OK (ERROR): {args.arch} {args.version} {lang}\n")
+                            f.write(str(err))
+                            f.write("\n")
+
                     else:
                         raise err
 
