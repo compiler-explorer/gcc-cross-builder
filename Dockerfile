@@ -56,17 +56,15 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     rm -rf aws* && \
     mkdir -p /opt/compiler-explorer/ && \
     cd /opt/compiler-explorer && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-4.8.5.tar.xz" -o gcc4.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-11.4.0.tar.xz" -o gcc11.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-14.1.0.tar.xz" -o gcc14.tar.xz && \
-    tar Jxf gcc4.tar.xz && \
     tar Jxf gcc11.tar.xz && \
     tar Jxf gcc12.tar.xz && \
     tar Jxf gcc13.tar.xz && \
     tar Jxf gcc14.tar.xz && \
-    rm gcc4.tar.xz gcc11.tar.xz gcc12.tar.xz gcc13.tar.xz gcc14.tar.xz
+    rm gcc*.tar.xz
 
 ## Need for host GCC version to be ~= latest cross GCC being built.
 ## This is at least needed for building cross-GNAT (Ada) as the GNAT runtime has no
