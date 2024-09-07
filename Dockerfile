@@ -59,7 +59,7 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-11.4.0.tar.xz" -o gcc11.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-14.1.0.tar.xz" -o gcc14.tar.xz && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-14.2.0.tar.xz" -o gcc14.tar.xz && \
     tar Jxf gcc11.tar.xz && \
     tar Jxf gcc12.tar.xz && \
     tar Jxf gcc13.tar.xz && \
@@ -71,8 +71,8 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
 ## requirement on a minimal supported version (e.g. need GCC 12 to build any GNAT runtime).
 ## This is only true for cross compiler. Native compiler can use host's runtime
 ## and bootstrap everything.
-ENV PATH="/opt/compiler-explorer/gcc-14.1.0/bin:${PATH}"
-ENV LD_LIBRARY_PATH="/opt/compiler-explorer/gcc-14.1.0/lib64:${PATH}"
+ENV PATH="/opt/compiler-explorer/gcc-14.2.0/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/opt/compiler-explorer/gcc-14.2.0/lib64:${PATH}"
 
 WORKDIR /opt
 
