@@ -34,7 +34,7 @@ import json
 import subprocess
 import argparse
 
-LANGS = ["ADA", "D", "FORTRAN", "CXX", "GO", "C", "OBJC", "OBJCXX"]
+LANGS = ["ADA", "D", "FORTRAN", "CXX", "GO", "C", "OBJC", "OBJCXX", "GIMPLE"]
 
 CT_LANGS = {
     "ADA": "ADA",
@@ -116,6 +116,21 @@ end program
     """,
     "OBJC": "int f(void){return 0;} int main (){return f();}",
     "OBJCXX": "int f(void){return 0;} int main (){return f();}",
+    "GIMPLE": """
+    int __GIMPLE (ssa)
+square (int num)
+{
+  int D_1916;
+  int _2;
+
+  __BB(2):
+  _2 = num_1(D) * num_1(D);
+  goto __BB3;
+
+  __BB(3):
+  return _2;
+}
+    """,
 }
 
 
@@ -259,6 +274,7 @@ COMPILER_ID_PATTERN.default_factory = lambda: {
     "GO": "gccgo{arch}{version}",
     "OBJC": "objc{arch}g{version}",
     "OBJCXX": "objcpp{arch}g{version}",
+    "GIMPLE": "gimple{arch}g{version}",
 }
 
 COMPILER_ID_PATTERN["riscv64"] = {
@@ -270,6 +286,7 @@ COMPILER_ID_PATTERN["riscv64"] = {
     "GO": "gccgo{arch}{version}",
     "OBJC": "objcrv32g{version}",
     "OBJCXX": "objcppgccrv64{version}",
+    "GIMPLE": "rv64-gimplegcc{version}",
 }
 
 COMPILER_ID_PATTERN["riscv32"] = {
@@ -281,6 +298,7 @@ COMPILER_ID_PATTERN["riscv32"] = {
     "GO": "gccgo{arch}{version}",
     "OBJC": "objcrv32g{version}",
     "OBJCXX": "objcppgccrv32{version}",
+    "GIMPLE": "rv32-gimplegcc{version}",
 }
 
 COMPILER_ID_PATTERN["arm-unknown"] = {
@@ -292,6 +310,7 @@ COMPILER_ID_PATTERN["arm-unknown"] = {
     "GO": "gccgo{arch}u{version}",
     "OBJC": "objc{arch}ug{version}",
     "OBJCXX": "objcpp{arch}ug{version}",
+    "GIMPLE": "gimple{arch}ug{version}",
 }
 
 ARCH_RENAMING_IN_CONFIG = {
@@ -312,6 +331,7 @@ FILEPREFIX = {
     "GO": "go",
     "OBJC": "objc",
     "OBJCXX": "objc++",
+    "GIMPLE": "gimple",
 }
 
 COMPILER_SUFFIX = {
@@ -323,6 +343,7 @@ COMPILER_SUFFIX = {
     "GO": "gccgo",
     "OBJC": "gcc",
     "OBJCXX": "g++",
+    "GIMPLE": "gcc",
 }
 
 
@@ -408,13 +429,15 @@ compiler.{compiler_id}.demangler={cppfilt_path}
 
 
 def findFile(arch: str, lang: str, version: str, directory: str, suffix: str):
-    target_dir = "{directory}/{arch}/gcc-{version}/**/*-{suffix}".format(
-        directory=directory, arch=arch, version=version, suffix=suffix
-    )
+    if arch == "arm-unknown":
+        target_dir = f"{directory}/arm/gcc-arm-unknown-{version}/**/*-{suffix}"
+    else:
+        target_dir = f"{directory}/{arch}/gcc-{version}/**/*-{suffix}"
+
     print("search in {}".format(target_dir))
     for f in glob.glob(target_dir, recursive=True):
         return abspath(f)
-    raise Woops("Can't find '{target_dir}, something's wrong")
+    raise Woops(f"Can't find '{target_dir}, something's wrong")
 
 
 def findCompiler(arch: str, lang: str, version: str, directory: str):
@@ -657,7 +680,8 @@ def parse_previous_version(version, arch, lang, guess_previous, parsed_conf):
 def check_lang_enabled_in_ctng(args, lang):
 
     ## You can't disable C \_o<
-    if lang == "C":
+    ## GIMPLE is not enabled in CTNG, it's builtin GCC now.
+    if lang == "C" or lang == "GIMPLE":
         return True
 
     ct_ng_config = join("build", "latest", f"{args.arch}-{args.version}.config")
