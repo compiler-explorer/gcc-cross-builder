@@ -16,7 +16,7 @@ the docker images used to build the various GCC cross-compilers used on the site
   `./local_build.sh arm64 13.2.0`
 - add ct-ng config and commit (and open a Pull Request)
 
-Later, when the config is added, trigger a build:
+Later, when the config is added, trigger a build (only an admin can do that):
 
 ``` sh
 gh workflow run -R compiler-explorer/infra 'Custom compiler build' -f image=gcc-cross -f version="arm64 14.2.0"
@@ -27,9 +27,11 @@ Later, when the build is finished, add the needed config in `infra` repository. 
 ``` sh
  ./bin/ce_install install compilers/c++/cross/gcc/arm 14.2.0
 ```
+The installation can be done locally without merging anything in `infra`.
 
 When the compiler is installed, then you can update the config files using the
-instructions below. The script won't touch any config as it's a new target, but
+instructions below (intallation is required, the script probes the install dir to check the required bin).
+The script won't touch any config as it's a new target, but
 it will provide most of the content, ready to be copy/pasted all around.
 
 ## How to add a new version for some/all cross compilers
