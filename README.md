@@ -3,6 +3,35 @@
 The repository is part of the [Compiler Explorer](https://godbolt.org/) project. It builds
 the docker images used to build the various GCC cross-compilers used on the site.
 
+## How to add a new target
+
+- create a ct-ng config:
+  - can be based on a ct-ng sample
+  - can be a new config
+  - disable PROGRESS_BAR and any gdb features
+- check it builds correctly:
+  `./ct-ng build`
+- copy the config in this repository in `build/latest` following the naming convention.
+- use `local_build.sh` to build it within the docker container
+  `./local_build.sh arm64 13.2.0`
+- add ct-ng config and commit (and open a Pull Request)
+
+Later, when the config is added, trigger a build:
+
+``` sh
+gh workflow run -R compiler-explorer/infra 'Custom compiler build' -f image=gcc-cross -f version="arm64 14.2.0"
+```
+
+Later, when the build is finished, add the needed config in `infra` repository. Test it with:
+
+``` sh
+ ./bin/ce_install install compilers/c++/cross/gcc/arm 14.2.0
+```
+
+When the compiler is installed, then you can update the config files using the
+instructions below. The script won't touch any config as it's a new target, but
+it will provide most of the content, ready to be copy/pasted all around.
+
 ## How to add a new version for some/all cross compilers
 
 The script [check_and_update_conf.py](./check_and_update_conf.py) can be used to automate some work:
