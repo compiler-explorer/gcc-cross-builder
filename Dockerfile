@@ -66,7 +66,7 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     tar Jxf gcc13.tar.xz && \
     tar Jxf gcc14.tar.xz && \
     tar Jxf gcc-trunk.tar.xz && \
-    mv gcc-trunk-20240907/ gcc-trunk && \
+    mv gcc-trunk-20240920/ gcc-trunk && \
     rm gcc*.tar.xz
 
 ## Beware of the "trunk" download. It is useful when a cross compiler really
