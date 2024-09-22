@@ -11,8 +11,9 @@ RET=0
 mkdir -p $OUTDIR
 
 DOCKER=docker
-if ! type -P ${DOCKER} 2>/dev/null ; then
-	DOCKER=podman
+if ! type -P ${DOCKER} 2>/dev/null;
+then
+    DOCKER=podman
 fi
 
 if [ "$VERSION" = "trunk" ]; then
@@ -25,8 +26,8 @@ CID=$(${DOCKER} create -ti --name dummy gcc-cross ./build.sh "$ARCH" "$VERSION" 
 
 if ${DOCKER} start -a "$CID";
 then
-   ${DOCKER} cp "dummy:/opt/$ARCH-gcc-${OUTPUT_VERSION_FILE}.tar.xz" "$OUTDIR"/
-   echo "$ARCH SUCCESS"
+    ${DOCKER} cp "dummy:/opt/$ARCH-gcc-${OUTPUT_VERSION_FILE}.tar.xz" "$OUTDIR"/
+    echo "$ARCH SUCCESS"
 else
     echo "$ARCH FAILED"
     RET=1
