@@ -12,6 +12,7 @@ the docker images used to build the various GCC cross-compilers used on the site
 - check it builds correctly:
   `./ct-ng build`
 - copy the config in this repository in `build/latest` following the naming convention.
+- build the container as a one-off with `docker build -t gcc-cross .`
 - use `local_build.sh` to test a build it within the docker container
   `./local_build.sh arm64 13.2.0`
 - add ct-ng config and commit (and open a Pull Request)
