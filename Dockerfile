@@ -60,7 +60,7 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-14.2.0.tar.xz" -o gcc14.tar.xz && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20240920.tar.xz" -o gcc-trunk.tar.xz && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20250128.tar.xz" -o gcc-trunk.tar.xz && \
     tar Jxf gcc11.tar.xz && \
     tar Jxf gcc12.tar.xz && \
     tar Jxf gcc13.tar.xz && \
@@ -91,7 +91,7 @@ COPY build/patches/crosstool-ng/ld_library_path.patch ./
 
 ## TAG is pointing to a specific ct-ng revision (usually the current dev one
 ## when updating this script or ct-ng)
-RUN TAG=78980241378010f4983e320df76b5edf58a62ab7 && \
+RUN TAG=0842e659cb2297488175e1ba86b749c01e3b06f8 && \
     curl -sL https://github.com/crosstool-ng/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
