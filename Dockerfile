@@ -89,6 +89,8 @@ WORKDIR /opt
 ## Couldn't see anything suspicious (yet).
 COPY build/patches/crosstool-ng/ld_library_path.patch ./
 
+COPY build/patches/crosstool-ng/gmp-6.3.0.patch ./
+
 ## TAG is pointing to a specific ct-ng revision (usually the current dev one
 ## when updating this script or ct-ng)
 RUN TAG=0842e659cb2297488175e1ba86b749c01e3b06f8 && \
