@@ -96,6 +96,7 @@ RUN TAG=0842e659cb2297488175e1ba86b749c01e3b06f8 && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
     patch -p1 < ../ld_library_path.patch && \
+    patch -p1 < ../gmp-6.3.0.patch && \
     ./bootstrap && \
     ./configure --prefix=/opt/crosstool-ng-latest && \
     make -j$(nproc) && \
