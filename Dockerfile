@@ -90,6 +90,7 @@ WORKDIR /opt
 COPY build/patches/crosstool-ng/ld_library_path.patch ./
 
 COPY build/patches/crosstool-ng/gmp-6.3.0.patch ./
+COPY build/patches/crosstool-ng/0001-gcc-15-fix.patch ./
 
 ## TAG is pointing to a specific ct-ng revision (usually the current dev one
 ## when updating this script or ct-ng)
@@ -99,6 +100,7 @@ RUN TAG=0842e659cb2297488175e1ba86b749c01e3b06f8 && \
     cd crosstool-ng-${TAG} && \
     patch -p1 < ../ld_library_path.patch && \
     patch -p1 < ../gmp-6.3.0.patch && \
+    patch -p1 < ../0001-gcc-15-fix.patch && \
     ./bootstrap && \
     ./configure --prefix=/opt/crosstool-ng-latest && \
     make -j$(nproc) && \

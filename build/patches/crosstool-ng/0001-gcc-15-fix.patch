@@ -1,0 +1,30 @@
+From 80a11dc3593a32a9ce14427509ed6b49ae8c6fe5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marc=20Poulhi=C3=A8s?= <dkm@kataplop.net>
+Date: Tue, 4 Feb 2025 08:35:16 +0100
+Subject: [PATCH] gcc 15 fix
+
+---
+ packages/gmp/6.3.0/configure-compilation-error.patch | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+ create mode 100644 packages/gmp/6.3.0/configure-compilation-error.patch
+
+diff --git a/packages/gmp/6.3.0/configure-compilation-error.patch b/packages/gmp/6.3.0/configure-compilation-error.patch
+new file mode 100644
+index 00000000..1cf10070
+--- /dev/null
++++ b/packages/gmp/6.3.0/configure-compilation-error.patch
+@@ -0,0 +1,11 @@
++--- gmp-6.3.0/configure	2023-07-29 15:42:22.000000000 +0200
+++++ gmp/configure	2025-02-03 22:00:33.567817886 +0100
++@@ -6568,7 +6566,7 @@
++ 
++ #if defined (__GNUC__) && ! defined (__cplusplus)
++ typedef unsigned long long t1;typedef t1*t2;
++-void g(){}
+++void g(int, const t1*, t1, t1*, const t1*, int){}
++ void h(){}
++ static __inline__ t1 e(t2 rp,t2 up,int n,t1 v0)
++ {t1 c,x,r;int i;if(v0){c=1;for(i=1;i<n;i++){x=up[i];r=x+1;rp[i]=r;}}return c;}
+-- 
+2.47.2
+
