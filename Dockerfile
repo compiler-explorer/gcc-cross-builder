@@ -60,13 +60,13 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-14.2.0.tar.xz" -o gcc14.tar.xz && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20250415.tar.xz" -o gcc-trunk.tar.xz && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20250422.tar.xz" -o gcc-trunk.tar.xz && \
     tar Jxf gcc11.tar.xz && \
     tar Jxf gcc12.tar.xz && \
     tar Jxf gcc13.tar.xz && \
     tar Jxf gcc14.tar.xz && \
     tar Jxf gcc-trunk.tar.xz && \
-    mv gcc-trunk-20250415/ gcc-trunk && \
+    mv gcc-trunk-20250422/ gcc-trunk && \
     rm gcc*.tar.xz
 
 ## Beware of the "trunk" download. It is useful when a cross compiler really
@@ -89,24 +89,19 @@ WORKDIR /opt
 ## Couldn't see anything suspicious (yet).
 COPY build/patches/crosstool-ng/ld_library_path.patch ./
 
-COPY build/patches/crosstool-ng/gmp-6.3.0.patch ./
-COPY build/patches/crosstool-ng/0001-gcc-15-fix.patch ./
-
 ## TAG is pointing to a specific ct-ng revision (usually the current dev one
 ## when updating this script or ct-ng)
-RUN TAG=0842e659cb2297488175e1ba86b749c01e3b06f8 && \
-    curl -sL https://github.com/crosstool-ng/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
+RUN TAG=107c499c0d1453e9d18db22c4193995ba0252e79 && \
+    curl -sL https://github.com/dkm/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
     patch -p1 < ../ld_library_path.patch && \
-    patch -p1 < ../gmp-6.3.0.patch && \
-    patch -p1 < ../0001-gcc-15-fix.patch && \
     ./bootstrap && \
     ./configure --prefix=/opt/crosstool-ng-latest && \
     make -j$(nproc) && \
     make install
 
-RUN mkdir -p /opt/.build/tarballs
+RUN mkdir -p /opt/.build/tarballs /build
 COPY build /opt/
-RUN chown -R gcc-user /opt
+RUN chown -R gcc-user /opt /build
 USER gcc-user
