@@ -94,12 +94,11 @@ COPY build/patches/crosstool-ng/0001-gcc-15-fix.patch ./
 
 ## TAG is pointing to a specific ct-ng revision (usually the current dev one
 ## when updating this script or ct-ng)
-RUN TAG=0842e659cb2297488175e1ba86b749c01e3b06f8 && \
-    curl -sL https://github.com/crosstool-ng/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
+RUN TAG=107c499c0d1453e9d18db22c4193995ba0252e79 && \
+    curl -sL https://github.com/dkm/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
     patch -p1 < ../ld_library_path.patch && \
-    patch -p1 < ../gmp-6.3.0.patch && \
     patch -p1 < ../0001-gcc-15-fix.patch && \
     ./bootstrap && \
     ./configure --prefix=/opt/crosstool-ng-latest && \
