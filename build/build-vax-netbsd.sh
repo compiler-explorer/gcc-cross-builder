@@ -26,9 +26,6 @@ tooldir="${workdir}/tools"
 # Currently "old": 10.x (default)
 #           "new": 12.x
 #
-# Use "--timestamp 1680300000" to rebuild the same 10.4.0 compiler as the one we
-# have installed in
-# https://github.com/compiler-explorer/compiler-explorer/issues/4783
 
 if ! parsed_opts=$(getopt -o ons:t:f:h --long old,new,s3:,timestamp:,force-output:,help -n "${0}" -- "$@"); then
 	echo "Error parsing options." >&2
@@ -40,13 +37,13 @@ while :; do
 	case "${1}" in
 		-o | --old)
 			gcc_dir=gcc.old
-			build_vars=()
+			build_vars=( "-V" "HAVE_GCC=10" )
 			shift
 			;;
 
 		-n | --new)
 			gcc_dir=gcc
-			build_vars=( "-V" "HAVE_GCC=12" )
+			build_vars=()
 			shift
 			;;
 
@@ -109,7 +106,7 @@ gcc_name="gcc-${gcc_target}-${gcc_version}-${nb_actual_timestamp}"
 gcc_tarball="${workdir}/${gcc_name}.tar.xz"
 
 if [ -z "${forced_output_filename}" ]; then
-	gcc_tarball="${forced_output_filename}"
+	gcc_tarball="${gcc_name}.tar.xz"
 elif [ -d "${forced_output_filename}" ]; then
 	gcc_tarball="${forced_output_filename}/${gcc_name}.tar.xz"
 else
