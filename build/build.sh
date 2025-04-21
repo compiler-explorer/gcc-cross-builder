@@ -97,11 +97,14 @@ ${CT} olddefconfig
 sed -i -r 's|CT_ISL_MIRRORS=".*"|CT_ISL_MIRRORS="https://libisl.sourceforge.io/"|g' .config
 if ! ${CT} "build.$(nproc)"; then
     cat build.log
+    cp build.log $(dirname "${OUTPUT}")/"build.$ARCHITECTURE.$VERSION.log"
     exit 1
 fi
 
 export XZ_DEFAULTS="-T 0"
 tar Jcf "${OUTPUT}" -C "${STAGING_DIR}"/.. "gcc-${VERSION}"
+
+
 
 if [[ -n "${S3OUTPUT}" ]]; then
     aws s3 cp --storage-class REDUCED_REDUNDANCY "${OUTPUT}" "${S3OUTPUT}"
