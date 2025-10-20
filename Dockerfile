@@ -80,6 +80,10 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
 ## and bootstrap everything.
 ENV PATH="/opt/compiler-explorer/gcc-14.2.0/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/opt/compiler-explorer/gcc-14.2.0/lib64:${PATH}"
+# This is needed because cross-tools needs to look within this location for a libatomic from
+# the host toolchain.  But cross-tools overrides the sysroot, and so problems occur during
+# building because GCC now links -latomic by default.
+ENV LDFLAGS="-L/opt/compiler-explorer/gcc-14.2.0/lib64"
 
 WORKDIR /opt
 
