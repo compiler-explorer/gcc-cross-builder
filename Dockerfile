@@ -60,13 +60,13 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
     curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-14.2.0.tar.xz" -o gcc14.tar.xz && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20250803.tar.xz" -o gcc-trunk.tar.xz && \
+    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20251023.tar.xz" -o gcc-trunk.tar.xz && \
     tar Jxf gcc11.tar.xz && \
     tar Jxf gcc12.tar.xz && \
     tar Jxf gcc13.tar.xz && \
     tar Jxf gcc14.tar.xz && \
     tar Jxf gcc-trunk.tar.xz && \
-    mv gcc-trunk-20250803 gcc-trunk && \
+    mv gcc-trunk-20251023 gcc-trunk && \
     rm gcc*.tar.xz
 
 ## Beware of the "trunk" download. It is useful when a cross compiler really
