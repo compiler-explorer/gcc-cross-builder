@@ -8,10 +8,9 @@ RUN mkdir -p /opt && mkdir -p /home/gcc-user && useradd gcc-user && chown gcc-us
 
 RUN apt-get clean -y && apt-get check -y
 
-## for nightly build of cross compiler with GNAT (Ada), we need "a matching"
-## compiler. So using gcc-13 for master is not working. So we have a *hardcoded*
-## snapshot below that should be "good enough". When there's a failure caused by
-## GNAT, it's probably time to bump the snapshot.
+## For nightly build of cross compiler with GNAT (Ada), we need "a matching"
+## compiler. The nightly gcc trunk is installed via ce_install which handles
+## the symlink automatically.
 
 RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     apt-get install -y -q \
@@ -48,30 +47,35 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     vim \
     zlib1g-dev \
     software-properties-common \
-    xz-utils && \
+    xz-utils \
+    openssh-client \
+    python3 \
+    python3-venv && \
     cd /tmp && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip -q awscliv2.zip && \
     ./aws/install && \
-    rm -rf aws* && \
-    mkdir -p /opt/compiler-explorer/ && \
-    cd /opt/compiler-explorer && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-11.4.0.tar.xz" -o gcc11.tar.xz && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-12.3.0.tar.xz" -o gcc12.tar.xz && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-13.2.0.tar.xz" -o gcc13.tar.xz && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-14.2.0.tar.xz" -o gcc14.tar.xz && \
-    curl "https://s3.amazonaws.com/compiler-explorer/opt/gcc-trunk-20251023.tar.xz" -o gcc-trunk.tar.xz && \
-    tar Jxf gcc11.tar.xz && \
-    tar Jxf gcc12.tar.xz && \
-    tar Jxf gcc13.tar.xz && \
-    tar Jxf gcc14.tar.xz && \
-    tar Jxf gcc-trunk.tar.xz && \
-    mv gcc-trunk-20251023 gcc-trunk && \
-    rm gcc*.tar.xz
+    rm -rf aws*
 
-## Beware of the "trunk" download. It is useful when a cross compiler really
-## needs a very recent base compiler (e.g. GNAT). The hardcoded filename for
-## trunk will only work for some time as we are expiring them after a few days.
+# Add github public key to known_hosts for interaction-less clone
+RUN mkdir -p /root/.ssh && \
+    touch /root/.ssh/known_hosts && \
+    ssh-keyscan github.com >> /root/.ssh/known_hosts
+
+# Clone infra and set up ce_install
+RUN mkdir -p /opt/compiler-explorer && \
+    git clone https://github.com/compiler-explorer/infra /opt/compiler-explorer/infra && \
+    cd /opt/compiler-explorer/infra && make ce
+
+# Install host GCC compilers via ce_install
+RUN /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 11.4.0' && \
+    /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 12.3.0' && \
+    /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 13.2.0' && \
+    /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 14.2.0' && \
+    /opt/compiler-explorer/infra/bin/ce_install --enable nightly install 'compilers/c++/nightly/gcc trunk'
+
+## The trunk download is useful when a cross compiler really needs a very recent
+## base compiler (e.g. GNAT). ce_install handles the trunk symlink automatically.
 
 ## Need for host GCC version to be ~= latest cross GCC being built.
 ## This is at least needed for building cross-GNAT (Ada) as the GNAT runtime has no
