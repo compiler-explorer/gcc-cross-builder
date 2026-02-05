@@ -1,5 +1,5 @@
 FROM ubuntu:22.04
-MAINTAINER Matt Godbolt <matt@godbolt.org>
+LABEL maintainer="Matt Godbolt <matt@godbolt.org>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 
