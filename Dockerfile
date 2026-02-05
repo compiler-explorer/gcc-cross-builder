@@ -83,7 +83,7 @@ RUN /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 1
 ## This is only true for cross compiler. Native compiler can use host's runtime
 ## and bootstrap everything.
 ENV PATH="/opt/compiler-explorer/gcc-14.2.0/bin:${PATH}"
-ENV LD_LIBRARY_PATH="/opt/compiler-explorer/gcc-14.2.0/lib64:${PATH}"
+ENV LD_LIBRARY_PATH="/opt/compiler-explorer/gcc-14.2.0/lib64:${LD_LIBRARY_PATH}"
 
 WORKDIR /opt
 
