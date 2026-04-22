@@ -72,7 +72,8 @@ RUN /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 1
     /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 12.3.0' && \
     /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 13.2.0' && \
     /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 14.2.0' && \
-    /opt/compiler-explorer/infra/bin/ce_install --enable nightly install 'compilers/c++/nightly/gcc trunk'
+    /opt/compiler-explorer/infra/bin/ce_install --enable nightly install 'compilers/c++/nightly/gcc trunk' && \
+    ln -sf $(readlink /opt/compiler-explorer/gcc-snapshot) /opt/compiler-explorer/gcc-trunk
 
 ## The trunk download is useful when a cross compiler really needs a very recent
 ## base compiler (e.g. GNAT). ce_install handles the trunk symlink automatically.
