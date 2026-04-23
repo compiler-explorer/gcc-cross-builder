@@ -96,8 +96,8 @@ COPY build/patches/crosstool-ng/ld_library_path.patch ./
 
 ## TAG is pointing to a specific ct-ng revision (usually the current dev one
 ## when updating this script or ct-ng)
-RUN TAG=b0a9dd7365050bbb79e7b2697cd62336e799058f && \
-    curl -sL https://github.com/dkm/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
+RUN TAG=d04b73234f716e0d473aa059cf4c812d18703ac6 && \
+    curl -sL https://github.com/crosstool-ng/crosstool-ng/archive/${TAG}.zip --output crosstool-ng-master.zip  && \
     unzip crosstool-ng-master.zip && \
     cd crosstool-ng-${TAG} && \
     patch -p1 < ../ld_library_path.patch && \
