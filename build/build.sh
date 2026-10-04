@@ -89,6 +89,11 @@ for i in 1 2 3; do
     V=${V%.*}
 done
 
+# rust frontend needs rustc/cargo to build
+export CARGO_HOME=$PWD/rustup
+export RUSTUP_HOME=$PWD/rustup
+export PATH=$RUSTUP_HOME/bin:$PATH
+
 cp "${CONFIG_FILE}" .config
 ${CT} olddefconfig
 # oldconfig will restore mirror urls, so as a workaround until

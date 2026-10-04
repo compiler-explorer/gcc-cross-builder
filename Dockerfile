@@ -57,6 +57,9 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     ./aws/install && \
     rm -rf aws*
 
+# the rust gccrs frontend currently requires cargo/rust to build.
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
 # Add github public key to known_hosts for interaction-less clone
 RUN mkdir -p /root/.ssh && \
     touch /root/.ssh/known_hosts && \
