@@ -16,6 +16,8 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     apt-get install -y -q \
     autoconf \
     automake \
+    cargo \
+    rustc \
     libtool \
     bison \
     bzip2 \
@@ -56,9 +58,6 @@ RUN apt-get update -y -q && apt-get upgrade -y -q && apt-get upgrade -y -q && \
     unzip -q awscliv2.zip && \
     ./aws/install && \
     rm -rf aws*
-
-# the rust gccrs frontend currently requires cargo/rust to build.
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 # Add github public key to known_hosts for interaction-less clone
 RUN mkdir -p /root/.ssh && \
