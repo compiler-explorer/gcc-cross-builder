@@ -74,6 +74,8 @@ RUN /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 1
     /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 12.3.0' && \
     /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 13.2.0' && \
     /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 14.2.0' && \
+    /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 15.3.0' && \
+    /opt/compiler-explorer/infra/bin/ce_install install 'compilers/c++/x86/gcc 16.2.0' && \
     /opt/compiler-explorer/infra/bin/ce_install --enable nightly install 'compilers/c++/nightly/gcc trunk' && \
     ln -sf $(readlink /opt/compiler-explorer/gcc-snapshot) /opt/compiler-explorer/gcc-trunk
 
